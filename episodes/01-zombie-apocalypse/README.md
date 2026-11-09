@@ -21,10 +21,22 @@
 
 Всё сгенерировано кодом, без сторонних ассетов (кроме шрифтов OFL):
 
-- `src/tts.py` — озвучка по фразам через RHVoice (голос `aleksandr-hq`), строит `build/timeline.json` с таймингами каждой фразы.
+- `src/tts_elevenlabs.py` — озвучка через **ElevenLabs** (`eleven_multilingual_v2`, настройки под встревоженную подачу: stability 0.3, style 0.65), с контекстом соседних фраз для ровной интонации.
+- `src/tts.py` — запасной вариант: RHVoice (голос `aleksandr-hq`), строит `build/timeline.json` с таймингами каждой фразы.
 - `src/audio.py` — процедурный саунд-дизайн на numpy/scipy: дрон, учащающееся сердцебиение, удары на титрах, сирены, гудки, вертолёт, скрежет в дверь, стоны орды, помехи рации; «дрожь» в голосе рассказчика, дакинг фона под речь.
 - `src/scene.html` — 2D-анимация на Canvas: все планы, силуэтные персонажи, субтитры с подсветкой слов, шкала хронологии «день → неделя → месяц → год».
 - `src/render.js` — покадровый рендер в headless Chromium (Playwright) → ffmpeg.
+
+### Озвучка ElevenLabs
+
+```bash
+export ELEVENLABS_API_KEY=...            # ключ из elevenlabs.io → Profile → API Keys
+export ELEVENLABS_VOICE_ID=...           # опционально: ID голоса из Voice Library (по умолчанию Adam)
+./build.sh
+```
+
+Или сгенерируйте фразы вручную на сайте ElevenLabs, назовите их `vo_SS_LL.mp3` (SS — номер блока, LL — номер фразы из `src/script.json`, с нуля) и запустите `VO_IMPORT=папка ./build.sh`.
+Без ключа `build.sh` откатывается на RHVoice.
 
 Пересборка: `./build.sh` (нужны `rhvoice rhvoice-russian sox ffmpeg`, `python3` с `numpy scipy`, `node` + `playwright`).
 Превью отдельных кадров: `node src/render.js preview 12.5,44,90`.

@@ -206,7 +206,7 @@ for l in tl["lines"]:
     xi = np.interp(np.arange(int(len(x) * SR / sr)) * sr / SR, np.arange(len(x)), x)
     i = int(l["start"] * SR); vo[i:i + len(xi)] += xi[: N - i]
 t = tt(N)
-vo *= 1 + 0.07 * np.sin(2 * np.pi * 5.3 * t)            # nervous tremble
+vo *= 1 + (0.02 if tl.get("engine") == "elevenlabs" else 0.07) * np.sin(2 * np.pi * 5.3 * t)  # nervous tremble (subtle on a natural voice)
 vo = hp(vo, 90)
 vo = vo / (np.abs(vo).max() + 1e-9) * 0.9
 (BUILD / "vo_dry.wav").unlink(missing_ok=True)

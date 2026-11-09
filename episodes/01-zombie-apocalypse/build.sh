@@ -4,7 +4,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p build
-python3 src/tts.py 100 96          # rate %, pitch %
+# Narration: ElevenLabs if a key is set (or VO_IMPORT=dir with ready files), else RHVoice fallback
+if [[ -n "${VO_IMPORT:-}" ]]; then python3 src/tts_elevenlabs.py --import "$VO_IMPORT"
+elif [[ -n "${ELEVENLABS_API_KEY:-}" ]]; then python3 src/tts_elevenlabs.py
+else echo "ELEVENLABS_API_KEY not set -> RHVoice fallback"; python3 src/tts.py 100 96; fi
 python3 src/audio.py
 node src/render.js video 4
 ffmpeg -y -v error -f concat -safe 0 -i build/chunks.txt -i build/mix.wav -map 0:v -map 1:a \
