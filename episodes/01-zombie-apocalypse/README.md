@@ -1,6 +1,6 @@
 # Что если... Зомби-апокалипсис
 
-2D-анимация для Shorts/Reels/TikTok · 9:16 (1080×1920, 30 fps) · 2:00 · голос — встревоженный рассказчик (рус.)
+2D-анимация для Shorts/Reels/TikTok · 9:16 (1080×1920, 30 fps) · 2:00 · голос — встревоженный рассказчик (ElevenLabs, рус.)
 
 **Готовое видео:** [`zombie_apocalypse_what_if.mp4`](zombie_apocalypse_what_if.mp4)
 
@@ -31,7 +31,7 @@
 
 ```bash
 export ELEVENLABS_API_KEY=...            # ключ из elevenlabs.io → Profile → API Keys
-export ELEVENLABS_VOICE_ID=...           # опционально: ID голоса из Voice Library (по умолчанию Adam)
+export ELEVENLABS_VOICE_ID=...           # опционально: ID голоса из Voice Library (по умолчанию Brian)
 ./build.sh
 ```
 

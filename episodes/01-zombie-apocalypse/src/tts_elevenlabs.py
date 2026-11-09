@@ -4,7 +4,7 @@ Usage:
   ELEVENLABS_API_KEY=... python3 src/tts_elevenlabs.py            # synthesize via API
   python3 src/tts_elevenlabs.py --import DIR                      # use ready files DIR/vo_SS_LL.(mp3|wav)
 Env:
-  ELEVENLABS_VOICE_ID   voice to use (default: Adam, pNInz6obpgDQGcFmaJgB — pick any voice from your library)
+  ELEVENLABS_VOICE_ID   voice to use (default: Brian, nPczCjzI2devNBz1zQrb — pick any voice from your library)
   ELEVENLABS_MODEL      default eleven_multilingual_v2 (Russian support)
 """
 import json, os, subprocess, sys, pathlib, urllib.request, wave
@@ -12,7 +12,7 @@ import json, os, subprocess, sys, pathlib, urllib.request, wave
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BUILD = ROOT / "build"; BUILD.mkdir(exist_ok=True)
 script = json.loads((ROOT / "src/script.json").read_text())
-VOICE = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")
+VOICE = os.environ.get("ELEVENLABS_VOICE_ID", "nPczCjzI2devNBz1zQrb")
 MODEL = os.environ.get("ELEVENLABS_MODEL", "eleven_multilingual_v2")
 KEY = os.environ.get("ELEVENLABS_API_KEY", "")
 # low stability + high style = more emotional, nervous delivery
@@ -42,11 +42,9 @@ def pause_after(text):
 if not IMPORT and not KEY:
     sys.exit("Set ELEVENLABS_API_KEY or use --import DIR")
 flat = [l for s in script["segments"] for l in s["lines"]]
-t, k = 0.6, 0
-timeline = {"engine": "elevenlabs", "segments": [], "lines": []}
+TARGET = float(os.environ.get("VO_TARGET", "120"))   # stretch pauses so the episode fills this length
+k = 0; durs = {}
 for si, seg in enumerate(script["segments"]):
-    s_start = t
-    if seg["card"]: t += 0.9
     for li, text in enumerate(seg["lines"]):
         name = f"vo_{si:02d}_{li:02d}"; out = BUILD / f"{name}.wav"
         if IMPORT:
@@ -57,13 +55,25 @@ for si, seg in enumerate(script["segments"]):
                 synth(text, " ".join(flat[max(0, k - 2):k]), " ".join(flat[k + 1:k + 3]), src)
                 print("synth", name, text)
         to_wav(src, out); k += 1
-        d = dur(out)
-        timeline["lines"].append({"seg": si, "text": text, "file": out.name, "start": round(t, 3),
-                                  "end": round(t + d, 3), "is_card": li == 0 and bool(seg["card"])})
-        t += d + pause_after(text)
-    t += 0.6
-    timeline["segments"].append({"scene": seg["scene"], "card": seg["card"], "start": round(s_start, 3), "end": round(t, 3)})
-timeline["segments"][-1]["end"] = round(t + 2.5, 3)
-timeline["duration"] = round(t + 2.5, 3)
+        durs[(si, li)] = dur(out)
+
+def layout(extra):
+    t = 0.6; tl = {"engine": "elevenlabs", "segments": [], "lines": []}
+    for si, seg in enumerate(script["segments"]):
+        s_start = t
+        if seg["card"]: t += 0.9
+        for li, text in enumerate(seg["lines"]):
+            d = durs[(si, li)]
+            tl["lines"].append({"seg": si, "text": text, "file": f"vo_{si:02d}_{li:02d}.wav", "start": round(t, 3),
+                                "end": round(t + d, 3), "is_card": li == 0 and bool(seg["card"])})
+            t += d + pause_after(text) + extra
+        t += 0.6 + extra
+        tl["segments"].append({"scene": seg["scene"], "card": seg["card"], "start": round(s_start, 3), "end": round(t, 3)})
+    tl["segments"][-1]["end"] = round(t + 2.5, 3); tl["duration"] = round(t + 2.5, 3)
+    return tl
+
+base = layout(0)["duration"]
+gaps = sum(len(s["lines"]) + 1 for s in script["segments"])
+timeline = layout(max(0.0, (TARGET - base) / gaps))
 (BUILD / "timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=1))
-print("total duration:", timeline["duration"], "(target ~120s; video is padded to at least 120s)")
+print("speech-only layout:", base, "-> stretched to", timeline["duration"])

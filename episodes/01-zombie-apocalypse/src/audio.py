@@ -217,7 +217,7 @@ def wwrite(path, data):
         w.setnchannels(data.shape[1]); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((data * 32767).astype(np.int16).tobytes())
 wwrite(BUILD / "vo_dry.wav", vo)
-subprocess.run(["sox", str(BUILD / "vo_dry.wav"), str(BUILD / "vo_fx.wav"), "channels", "2",
+subprocess.run(["sox", str(BUILD / "vo_dry.wav"), str(BUILD / "vo_fx.wav"), "channels", "2", "gain", "-4",
                 "compand", "0.01,0.2", "-60,-60,-30,-15,-10,-8,0,-6", "0", "-90", "0.05",
                 "reverb", "18", "50", "40", "100", "8", "gain", "-n", "-1"], check=True)
 with wave.open(str(BUILD / "vo_fx.wav")) as w:
@@ -227,7 +227,7 @@ vox = np.zeros((N, 2)); vox[: len(vofx)] = vofx[:N]
 # ducking: lower music under voice
 venv = lp(np.abs(vox[:, 0]), 4)
 duck = 1 - 0.45 * np.clip(venv / (venv.max() * 0.25), 0, 1)
-bed = (music * 0.9 + sfx * 0.8) * duck[:, None]
+bed = (music * 0.9 + sfx * 0.8) * duck[:, None] * (0.65 if tl.get("engine") == "elevenlabs" else 1.0)
 mix = vox * 1.0 + bed
 mix[-int(2 * SR):] *= np.linspace(1, 0, int(2 * SR))[:, None]
 mix = np.tanh(mix * 1.1) / np.tanh(1.1)
