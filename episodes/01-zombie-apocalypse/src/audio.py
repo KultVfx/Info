@@ -227,7 +227,7 @@ vox = np.zeros((N, 2)); vox[: len(vofx)] = vofx[:N]
 # ducking: lower music under voice
 venv = lp(np.abs(vox[:, 0]), 4)
 duck = 1 - 0.45 * np.clip(venv / (venv.max() * 0.25), 0, 1)
-bed = (music * 0.9 + sfx * 0.8) * duck[:, None] * (0.65 if tl.get("engine") == "elevenlabs" else 1.0)
+bed = (music * 0.9 + sfx * 0.8) * duck[:, None] * float(__import__("os").environ.get("BED_GAIN", "0.85" if tl.get("engine") == "elevenlabs" else "1.0"))
 mix = vox * 1.0 + bed
 mix[-int(2 * SR):] *= np.linspace(1, 0, int(2 * SR))[:, None]
 mix = np.tanh(mix * 1.1) / np.tanh(1.1)

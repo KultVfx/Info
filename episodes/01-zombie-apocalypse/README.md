@@ -21,7 +21,7 @@
 
 Всё сгенерировано кодом, без сторонних ассетов (кроме шрифтов OFL):
 
-- `src/tts_elevenlabs.py` — озвучка через **ElevenLabs** (`eleven_multilingual_v2`, настройки под встревоженную подачу: stability 0.3, style 0.65), с контекстом соседних фраз для ровной интонации.
+- `src/tts_elevenlabs.py` — озвучка через **ElevenLabs** (`eleven_multilingual_v2`, голос «Horror Narrator RU (young, tense)», созданный через Voice Design; stability 0.3, style 0.65, скорость 1.08; длинные паузы внутри фраз ужимаются до 0.4 с), с контекстом соседних фраз для ровной интонации.
 - `src/tts.py` — запасной вариант: RHVoice (голос `aleksandr-hq`), строит `build/timeline.json` с таймингами каждой фразы.
 - `src/audio.py` — процедурный саунд-дизайн на numpy/scipy: дрон, учащающееся сердцебиение, удары на титрах, сирены, гудки, вертолёт, скрежет в дверь, стоны орды, помехи рации; «дрожь» в голосе рассказчика, дакинг фона под речь.
 - `src/scene.html` — 2D-анимация на Canvas: все планы, силуэтные персонажи, субтитры с подсветкой слов, шкала хронологии «день → неделя → месяц → год».
@@ -31,7 +31,7 @@
 
 ```bash
 export ELEVENLABS_API_KEY=...            # ключ из elevenlabs.io → Profile → API Keys
-export ELEVENLABS_VOICE_ID=...           # опционально: ID голоса из Voice Library (по умолчанию Brian)
+export ELEVENLABS_VOICE_ID=...           # опционально: ID голоса из Voice Library (по умолчанию — созданный голос «Horror Narrator RU»)
 ./build.sh
 ```
 
