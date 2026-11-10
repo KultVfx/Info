@@ -1,0 +1,23 @@
+{
+  "name": "horror-shorts",
+  "version": "1.0.0",
+  "description": "2D Horror Animation Shorts Visibility: Private",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KultVfx/Horror-shorts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KultVfx/Horror-shorts/issues"
+  },
+  "homepage": "https://github.com/KultVfx/Horror-shorts#readme",
+  "dependencies": {
+    "three": "^0.169.0"
+  }
+}

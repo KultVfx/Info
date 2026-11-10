@@ -1,0 +1,6 @@
+node_modules/
+output/preview/
+output/sheet*.png
+output/render.log
+output/video_noaudio.mp4
+output/mix.wav
