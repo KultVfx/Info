@@ -47,10 +47,8 @@ export const interests = [
 
 // Set `href` to activate a link. Links without an href render as "soon".
 export const socials = [
-  { label: 'Instagram', href: '' },
-  { label: 'Telegram', href: '' },
-  { label: 'YouTube', href: '' },
-  { label: 'Behance', href: '' },
+  { label: 'TikTok', href: 'https://www.tiktok.com/@kult.vfx' },
+  { label: 'Telegram', href: 'https://t.me/kultvfx' },
 ]
 
 export const contact = {
