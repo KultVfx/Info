@@ -16,5 +16,5 @@ export default function Scrim() {
     gsap.ticker.add(tick)
     return () => gsap.ticker.remove(tick)
   }, [])
-  return <div ref={ref} aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 bg-[#030304] opacity-0" />
+  return <div ref={ref} aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 bg-[#030304] opacity-0" />
 }

@@ -57,7 +57,7 @@ export default function Experience() {
   return (
     <div
       aria-hidden="true"
-      className={`fixed inset-0 -z-20 transition-opacity duration-[1800ms] ease-out ${ready ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-0 transition-opacity duration-[1800ms] ease-out ${ready ? 'opacity-100' : 'opacity-0'}`}
     >
       <Canvas
         dpr={Math.min(dpr, window.devicePixelRatio || 1)}
